@@ -13,6 +13,7 @@ import {
   TotalPassCount,
   LoginList,
 } from './styles';
+import { Text } from 'react-native';
 
 interface LoginDataProps {
   id: string;
@@ -31,19 +32,44 @@ export function Home() {
   async function loadData() {
     const dataKey = '@savepass:logins';
     // Get asyncStorage data, use setSearchListData and setData
+    try {
+      const response = await AsyncStorage.getItem(dataKey);
+
+      if (response) {
+        const responseParsed = JSON.parse(response);
+        setData(responseParsed);
+        setSearchListData(responseParsed);
+        // console.log(searchListData);
+      }
+
+    } catch (error) {
+      console.log(`Erro: ${error}`)
+    }
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    const filteredData = searchListData.filter(item => {
+      const isValid = item.service_name.toLowerCase()
+        .includes(searchText.toLowerCase());
+        
+      if (isValid) {
+        return item;
+      }
+    });
+
+    setSearchListData(filteredData);
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    if (!text) {
+      setSearchListData(data);
+    }
+    setSearchText(text);
   }
 
   useFocusEffect(useCallback(() => {
     loadData();
-  }, []));
+  }, [searchText]));
 
   return (
     <>
@@ -56,7 +82,7 @@ export function Home() {
       <Container>
         <SearchBar
           placeholder="Qual senha você procura?"
-          onChangeText={handleChangeInputText}
+          onChangeText={text => handleChangeInputText(text)}
           value={searchText}
           returnKeyType="search"
           onSubmitEditing={handleFilterLoginData}
