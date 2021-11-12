@@ -53,8 +53,6 @@ export function RegisterLoginData() {
       const response = await AsyncStorage.getItem(dataKey);
       const responseParsed = JSON.parse(response) || [];
 
-      // Save data on AsyncStorage and navigate to 'Home' screen
-      console.log(newLoginData);
       const newLoginListData = [
         ...responseParsed,
         newLoginData
@@ -62,7 +60,7 @@ export function RegisterLoginData() {
       await AsyncStorage.setItem(dataKey, JSON.stringify(newLoginListData));
       navigate('Home');
     } catch (error) {
-      Alert.alert('Erro ao inserir os dados');
+      Alert.alert('Erro ao inserir os dados: ' + error);
     }
   }
 

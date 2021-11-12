@@ -39,7 +39,7 @@ export function Home() {
         const responseParsed = JSON.parse(response);
         setData(responseParsed);
         setSearchListData(responseParsed);
-        // console.log(searchListData);
+        console.log(searchListData);
       }
 
     } catch (error) {
